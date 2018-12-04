@@ -17,4 +17,14 @@ public class ApiService {
         return retrofit;
     }
 
+    public static ArtisanService artisanService() {
+        Retrofit retrofit = getRetrofitInstance();
+        return retrofit.create(ArtisanService.class);
+    }
+
+    public static UserService userService() {
+        Retrofit retrofit = getRetrofitInstance();
+        return retrofit.create(UserService.class);
+    }
+
 }

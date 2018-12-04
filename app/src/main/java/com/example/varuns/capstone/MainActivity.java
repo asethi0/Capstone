@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.widget.Toast;
 
 import com.example.varuns.capstone.model.Artisan;
+import com.example.varuns.capstone.model.ArtisanItem;
 import com.example.varuns.capstone.services.ApiService;
 import com.example.varuns.capstone.services.ArtisanService;
 import com.example.varuns.capstone.services.RestfulResponse;
@@ -41,14 +42,21 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(myIntent);
             }
         });
-//        Retrofit retrofit = ApiService.getRetrofitInstance();
-//        ArtisanService artisanService = retrofit.create(ArtisanService.class);
-//        Call<RestfulResponse<List<Artisan>>> call = artisanService.getAllArtisans();
+
+        //gson tool for printing objects
+        final Gson gson = new Gson();
+
+//        //GETTING ARTISANS EXAMPLE
+//
+//        //make call to getAllArtisans function of artisanService
+//        Call<RestfulResponse<List<Artisan>>> call = ApiService.artisanService().getAllArtisans();
+//        //handle the response
 //        call.enqueue(new Callback<RestfulResponse<List<Artisan>>>() {
 //            @Override
 //            public void onResponse(Call<RestfulResponse<List<Artisan>>> call, Response<RestfulResponse<List<Artisan>>> response) {
 //                List<Artisan> a1 = response.body().getData();
-//                Toast.makeText(MainActivity.this, a1.get(0).getBio(), Toast.LENGTH_SHORT).show();
+//                Toast.makeText(MainActivity.this, gson.toJson(a1.get(0)), Toast.LENGTH_SHORT).show();
+//
 //            }
 //
 //            @Override
@@ -56,6 +64,35 @@ public class MainActivity extends AppCompatActivity {
 //                Toast.makeText(MainActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
 //            }
 //        });
+//
+//        //SAVING AN ARTISAN EXAMPLE
+//
+//        //create artisan to save
+//        final Artisan artisan = new Artisan();
+//        artisan.setFirstName("Bob");
+//        artisan.setLastName("Smith");
+//        artisan.setBio("I enjoy making stuffed animals");
+//
+//        //call save artisan function of artisan service
+//        //when saving what ever you saved is returned with updated ids and other fields
+//        Call<RestfulResponse<Artisan>> call1 = ApiService.artisanService().saveArtisan(artisan);
+//        call1.enqueue(new Callback<RestfulResponse<Artisan>>() {
+//            @Override
+//            public void onResponse(Call<RestfulResponse<Artisan>> call, Response<RestfulResponse<Artisan>> response) {
+//                //report the result of the call
+//                Toast.makeText(MainActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+//                artisan.setArtisanId(response.body().getData().getArtisanId());
+//
+//            }
+//
+//            @Override
+//            public void onFailure(Call<RestfulResponse<Artisan>> call, Throwable t) {
+//                Toast.makeText(MainActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+//            }
+//        });
+
+
+
 
     }
 

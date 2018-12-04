@@ -1,11 +1,14 @@
 package com.example.varuns.capstone.model;
 
+import java.util.List;
+
 public class Artisan {
 
     Integer artisanId;
     String firstName;
     String lastName;
     String bio;
+    List<ArtisanItem> artisanItems;
 
     public Integer getArtisanId() {
         return artisanId;
@@ -37,5 +40,13 @@ public class Artisan {
 
     public void setBio(String bio) {
         this.bio = bio;
+    }
+
+    public List<ArtisanItem> getArtisanItems() {
+        return artisanItems;
+    }
+
+    public void setArtisanItems(List<ArtisanItem> artisanItems) {
+        this.artisanItems = artisanItems;
     }
 }

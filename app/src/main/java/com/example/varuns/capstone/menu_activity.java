@@ -34,8 +34,16 @@ public class menu_activity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-
+//        Button button = (Button) findViewById(R.id.artisan_temp);
+//        button.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view){
+//                Intent myintent = new Intent(menu_activity.this, ScrollingActivity.class);
+//                startActivity(myintent);
+//            }
+//        });
     }
+
 
     @Override
     public void onBackPressed() {
