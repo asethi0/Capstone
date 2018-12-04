@@ -34,6 +34,10 @@
         <activity
             android:name=".menu_activity"
             android:label="@string/title_activity_menu_activity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Messages"
+            android:label="@string/title_activity_messages"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
