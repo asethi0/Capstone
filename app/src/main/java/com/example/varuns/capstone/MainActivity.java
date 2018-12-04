@@ -1,8 +1,6 @@
 package com.example.varuns.capstone;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -10,6 +8,21 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.content.Intent;
+import android.widget.Toast;
+
+import com.example.varuns.capstone.model.Artisan;
+import com.example.varuns.capstone.services.ApiService;
+import com.example.varuns.capstone.services.ArtisanService;
+import com.example.varuns.capstone.services.RestfulResponse;
+import com.example.varuns.capstone.services.UserService;
+import com.google.gson.Gson;
+
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -28,6 +41,22 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(myIntent);
             }
         });
+//        Retrofit retrofit = ApiService.getRetrofitInstance();
+//        ArtisanService artisanService = retrofit.create(ArtisanService.class);
+//        Call<RestfulResponse<List<Artisan>>> call = artisanService.getAllArtisans();
+//        call.enqueue(new Callback<RestfulResponse<List<Artisan>>>() {
+//            @Override
+//            public void onResponse(Call<RestfulResponse<List<Artisan>>> call, Response<RestfulResponse<List<Artisan>>> response) {
+//                List<Artisan> a1 = response.body().getData();
+//                Toast.makeText(MainActivity.this, a1.get(0).getBio(), Toast.LENGTH_SHORT).show();
+//            }
+//
+//            @Override
+//            public void onFailure(Call<RestfulResponse<List<Artisan>>> call, Throwable t) {
+//                Toast.makeText(MainActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+//            }
+//        });
+
     }
 
     @Override
