@@ -34,14 +34,7 @@ public class menu_activity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        Button button = (Button) findViewById(R.id.artisan_temp);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view){
-                Intent myintent = new Intent(menu_activity.this, ScrollingActivity.class);
-                startActivity(myintent);
-            }
-        });
+
     }
 
     @Override
@@ -82,17 +75,15 @@ public class menu_activity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
+        if (id == R.id.nav_home) {
             // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
+        } else if (id == R.id.nav_info) {
 
         } else if (id == R.id.nav_send) {
+
+        } else if (id == R.id.nav_tasks) {
+
+        } else if (id == R.id.nav_share) {
 
         }
 
