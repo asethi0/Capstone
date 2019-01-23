@@ -1,4 +1,4 @@
-package com.example.varuns.creamcrusaders;
+package com.example.varuns.capstone;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.example.varuns.creamcrusaders", appContext.getPackageName());
+        assertEquals("com.example.varuns.capstone", appContext.getPackageName());
     }
 }

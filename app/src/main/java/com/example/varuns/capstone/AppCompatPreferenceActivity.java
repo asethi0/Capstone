@@ -1,4 +1,4 @@
-package com.example.varuns.creamcrusaders;
+package com.example.varuns.capstone;
 
 import android.content.res.Configuration;
 import android.os.Bundle;

@@ -1,4 +1,4 @@
-package com.example.varuns.creamcrusaders;
+package com.example.varuns.capstone;
 
 import org.junit.Test;
 
