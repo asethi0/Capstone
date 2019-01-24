@@ -186,4 +186,5 @@
     <string name="title_activity_messages">Messages</string>
     <string name="search_hint">Search artisans...</string>
     <string name="action_search">Search artisans...</string>
+    <string name="title_activity_send_message">Send_message</string>
 </resources>

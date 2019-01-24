@@ -194,6 +194,9 @@ public class menu_activity extends AppCompatActivity
         } else if (id == R.id.nav_info) {
 
         } else if (id == R.id.nav_send) {
+            Intent myintent = new Intent(menu_activity.this, Send_message.class);
+            startActivity(myintent);
+            return true;
 
         } else if (id == R.id.nav_tasks) {
 
