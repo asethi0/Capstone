@@ -1,9 +1,13 @@
 package com.example.varuns.capstone;
 
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.widget.SearchView;
+import android.view.MenuInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -17,6 +21,8 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -28,6 +34,7 @@ import com.example.varuns.capstone.services.ApiService;
 import com.example.varuns.capstone.services.RestfulResponse;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -35,10 +42,10 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class menu_activity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, SearchView.OnQueryTextListener {
 
     private ListView artisanList;
-    private ArtisanAdapter artisanAdapter;
+    private ArtisanAdapter artisanAdapterGlobal;
     private Integer[] artisanImages = {R.drawable.maria, R.drawable.native5, R.drawable.native3 };
 
 
@@ -48,7 +55,7 @@ public class menu_activity extends AppCompatActivity
         setContentView(R.layout.activity_menu_activity);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("My Artisans");
+        getSupportActionBar().setTitle("");
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -73,6 +80,13 @@ public class menu_activity extends AppCompatActivity
             }
         });
 
+        // Get the intent, verify the action and get the query
+        /*Intent intent = getIntent();
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            String query = intent.getStringExtra(SearchManager.QUERY);
+            doMySearch(query);
+        }*/
+
 //        test();
 
 //        Button button = (Button) findViewById(R.id.artisan_temp);
@@ -85,11 +99,43 @@ public class menu_activity extends AppCompatActivity
 //        });
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the options menu from XML
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_activity, menu);
+
+        // Get the SearchView and set the searchable configuration
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+        // Assumes current activity is the searchable activity
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        searchView.setIconifiedByDefault(false); // Do not iconify the widget; expand it by default
+        searchView.setSubmitButtonEnabled(true);
+        searchView.setOnQueryTextListener(this);
+
+        return true;
+    }
+
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String query) {
+        artisanAdapterGlobal.getFilter().filter(query);
+
+        return true;
+    }
+
     public void getArtisansNoDB() {
         List<Artisan> artisans = new ArrayList<Artisan>();
         //Integer artisanId, String firstName, String lastName, String bio, List<ArtisanItem> artisanItems
         artisans.add(new Artisan(1, "martha", "blah", "hello", new ArrayList<ArtisanItem>()));
         menu_activity.ArtisanAdapter artisanAdapter = new menu_activity.ArtisanAdapter(artisans);
+        artisanAdapterGlobal = artisanAdapter;
         artisanList.setAdapter(artisanAdapter);
     }
 
@@ -120,13 +166,6 @@ public class menu_activity extends AppCompatActivity
         } else {
             super.onBackPressed();
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_activity, menu);
-        return true;
     }
 
     @Override
@@ -167,33 +206,98 @@ public class menu_activity extends AppCompatActivity
         return true;
     }
 
-    class ArtisanAdapter extends BaseAdapter {
+    class ArtisanAdapter extends BaseAdapter implements Filterable {
 
         List<Artisan> artisans;
-        List<Artisan> original;
+        List<Artisan> filteredArtisans;
+        private ArtisanFilter artisanFilter;
+
+        private class ArtisanFilter extends Filter {
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                FilterResults filterResults = new FilterResults();
+                if (constraint != null && constraint.length()>0) {
+                    ArrayList<Artisan> filtered = new ArrayList<>();
+
+                    // search content in friend list
+                    for (Artisan a : artisans) {
+                        boolean valid = true, whitespace = false;
+                        int whiteSpaceIndex = 0;
+                        for (int i = 0; i < constraint.length(); i++) {
+                            if (Character.isWhitespace(constraint.charAt(i))) {
+                                whitespace = true;
+                                whiteSpaceIndex = i;
+                                continue;
+                            }
+
+                            //whitespace has not occured, check both
+                            if (!whitespace &&
+                                    (a.getFirstName().length() <= i || a.getFirstName().charAt(i) != constraint.charAt(i)) &&
+                                    (a.getLastName().length() <= i || a.getLastName().charAt(i) != constraint.charAt(i))) {
+                                valid = false;
+                                break;
+                            }
+
+                            //whitespace has occured, only check last name
+                            else if (whitespace &&
+                                    (a.getLastName().length() <= i - whiteSpaceIndex - 1||
+                                            a.getLastName().charAt(i - whiteSpaceIndex - 1) != constraint.charAt(i))) {
+                                valid = false;
+                                break;
+                            }
+                        }
+
+                        if (valid) {
+                            filtered.add(a);
+                        }
+                    }
+
+                    filterResults.count = filtered.size();
+                    filterResults.values = filtered;
+                }
+
+                else {
+                    filterResults.count = artisans.size();
+                    filterResults.values = artisans;
+                }
+
+                return filterResults;
+            }
+
+            @SuppressWarnings("unchecked")
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+                filteredArtisans = (ArrayList<Artisan>) results.values;
+                notifyDataSetChanged();
+            }
+        }
+
+        @Override
+        public Filter getFilter() {
+            if (artisanFilter == null) {
+                artisanFilter = new ArtisanFilter();
+            }
+
+            return artisanFilter;
+        }
 
         public ArtisanAdapter(List<Artisan> artisans) {
             this.artisans = artisans;
-        }
-
-        public void filterArtisans(List<Artisan> newArtisans) {
-            this.original = this.artisans;
-            this.artisans = newArtisans;
-        }
-
-        public void undoFilter() {
-            this.artisans = original;
+            this.filteredArtisans = artisans;
+            getFilter();
         }
 
         public void addArtisan(Artisan a) {
             artisans.add(a);
         }
 
+        public List<Artisan> getArtisans() { return artisans; }
+
         public int getCount() {
-            return artisans.size();
+            return filteredArtisans.size();
         }
         public Artisan getItem(int i) {
-            return artisans.get(i);
+            return filteredArtisans.get(i);
         }
         public long getItemId(int i) {
             return 0;
