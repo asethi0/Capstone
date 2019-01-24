@@ -33,6 +33,7 @@ import com.example.varuns.capstone.model.ArtisanItem;
 import com.example.varuns.capstone.services.ApiService;
 import com.example.varuns.capstone.services.RestfulResponse;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -130,10 +131,46 @@ public class menu_activity extends AppCompatActivity
         return true;
     }
 
+    String itemNameT = "Teddy Bear";
+    String itemDescT = "A lovable stuffed bear";
+
+    private String[] nameDB = {
+            "Martha",
+            "Maria",
+            "Sofia",
+            "Camila",
+            "Emma",
+            "Sara",
+            "Gabriela",
+            "Elena",
+            "Victoria",
+            "Emilia",
+            "Natalia"
+    };
+
+    private String[] nameDBLast = {
+            "Hernandez",
+            "Garcia",
+            "Lopez",
+            "Martinez",
+            "Rodriguez",
+            "Gonzalez",
+            "Perez",
+            "Sanchez",
+            "Gomez",
+            "Flores",
+            "Jiminez"
+    };
+
     public void getArtisansNoDB() {
         List<Artisan> artisans = new ArrayList<Artisan>();
         //Integer artisanId, String firstName, String lastName, String bio, List<ArtisanItem> artisanItems
-        artisans.add(new Artisan(1, "martha", "blah", "hello", new ArrayList<ArtisanItem>()));
+        for (int i = 0; i < nameDB.length; i++) {
+            ArrayList<ArtisanItem> items = new ArrayList<>();
+            items.add(new ArtisanItem(i, 0, itemNameT, itemDescT));
+            artisans.add(new Artisan(i, nameDB[i], nameDBLast[i], "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum",
+                    items));
+        }
         menu_activity.ArtisanAdapter artisanAdapter = new menu_activity.ArtisanAdapter(artisans);
         artisanAdapterGlobal = artisanAdapter;
         artisanList.setAdapter(artisanAdapter);
@@ -222,35 +259,42 @@ public class menu_activity extends AppCompatActivity
                 if (constraint != null && constraint.length()>0) {
                     ArrayList<Artisan> filtered = new ArrayList<>();
 
+                    constraint = constraint.toString().toLowerCase();
                     // search content in friend list
                     for (Artisan a : artisans) {
-                        boolean valid = true, whitespace = false;
+                        boolean firstValid = true, lastValid=true, whitespace = false;
                         int whiteSpaceIndex = 0;
+                        String first = a.getFirstName().toLowerCase();
+                        String last = a.getLastName().toLowerCase();
                         for (int i = 0; i < constraint.length(); i++) {
                             if (Character.isWhitespace(constraint.charAt(i))) {
                                 whitespace = true;
                                 whiteSpaceIndex = i;
+                                lastValid = true;
                                 continue;
                             }
 
-                            //whitespace has not occured, check both
                             if (!whitespace &&
-                                    (a.getFirstName().length() <= i || a.getFirstName().charAt(i) != constraint.charAt(i)) &&
-                                    (a.getLastName().length() <= i || a.getLastName().charAt(i) != constraint.charAt(i))) {
-                                valid = false;
-                                break;
+                                    (first.length() <= i || first.charAt(i) != constraint.charAt(i))) {
+                                firstValid = false;
+                            }
+
+                            if (!whitespace &&
+                                    (last.length() <= i || last.charAt(i) != constraint.charAt(i))) {
+                                lastValid = false;
                             }
 
                             //whitespace has occured, only check last name
                             else if (whitespace &&
-                                    (a.getLastName().length() <= i - whiteSpaceIndex - 1||
-                                            a.getLastName().charAt(i - whiteSpaceIndex - 1) != constraint.charAt(i))) {
-                                valid = false;
-                                break;
+                                    (last.length() <= i - whiteSpaceIndex - 1 ||
+                                            last.charAt(i - whiteSpaceIndex - 1) != constraint.charAt(i))) {
+                                lastValid = false;
                             }
                         }
 
-                        if (valid) {
+                        if (firstValid ||
+                                ((lastValid && whiteSpaceIndex != constraint.length() - 1)
+                                || (lastValid && whiteSpaceIndex == 0))) {
                             filtered.add(a);
                         }
                     }
@@ -309,7 +353,7 @@ public class menu_activity extends AppCompatActivity
             view = getLayoutInflater().inflate(R.layout.artisan_list_layout, null);
             ImageView artisanImage = (ImageView)view.findViewById(R.id.artisanImage);
             TextView artisanName = (TextView)view.findViewById(R.id.artisanName);
-            artisanName.setText(artisans.get(i).getFirstName() + " " + artisans.get(i).getLastName());
+            artisanName.setText(filteredArtisans.get(i).getFirstName() + " " + filteredArtisans.get(i).getLastName());
             artisanImage.setImageResource(artisanImages[i%3]);
             return view;
         }

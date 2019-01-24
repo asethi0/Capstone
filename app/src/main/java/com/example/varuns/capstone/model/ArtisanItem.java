@@ -7,6 +7,13 @@ public class ArtisanItem {
     String itemName;
     String itemDescription;
 
+    public ArtisanItem(Integer artisanId, Integer itemId, String itemName, String itemDescription) {
+        this.artisanId = artisanId;
+        this.itemId = itemId;
+        this.itemName = itemName;
+        this.itemDescription = itemDescription;
+    }
+
     public Integer getArtisanId() {
         return artisanId;
     }
