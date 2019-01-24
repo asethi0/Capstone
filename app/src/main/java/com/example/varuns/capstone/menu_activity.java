@@ -13,10 +13,32 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.example.varuns.capstone.model.Artisan;
+import com.example.varuns.capstone.services.ApiService;
+import com.example.varuns.capstone.services.RestfulResponse;
+
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class menu_activity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    private ListView artisanList;
+    private ArtisanAdapter artisanAdapter;
+    private Integer[] artisanImages = {R.drawable.maria, R.drawable.native5, R.drawable.native3 };
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +46,7 @@ public class menu_activity extends AppCompatActivity
         setContentView(R.layout.activity_menu_activity);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("My Artisans");
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -33,6 +56,21 @@ public class menu_activity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        artisanList = (ListView)findViewById(R.id.artisanList);
+        getArtisans();
+        artisanList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position,
+                                    long id) {
+                Artisan artisan = (Artisan) parent.getAdapter().getItem(position);
+                Intent intent = new Intent(menu_activity.this, ScrollingActivity.class);
+                intent.putExtra("artisanId", artisan.getArtisanId());
+                startActivity(intent);
+
+            }
+        });
+
+//        test();
 
 //        Button button = (Button) findViewById(R.id.artisan_temp);
 //        button.setOnClickListener(new View.OnClickListener() {
@@ -44,6 +82,26 @@ public class menu_activity extends AppCompatActivity
 //        });
     }
 
+    public void getArtisans() {
+        Call<RestfulResponse<List<Artisan>>> call = ApiService.artisanService().getAllArtisans();
+        //handle the response
+        call.enqueue(new Callback<RestfulResponse<List<Artisan>>>() {
+            @Override
+            public void onResponse(Call<RestfulResponse<List<Artisan>>> call, Response<RestfulResponse<List<Artisan>>> response) {
+                List<Artisan> artisans = response.body().getData();
+                Toast.makeText(menu_activity.this, "success", Toast.LENGTH_SHORT).show();
+                menu_activity.ArtisanAdapter artisanAdapter = new menu_activity.ArtisanAdapter(artisans);
+                artisanList.setAdapter(artisanAdapter);
+
+
+            }
+
+            @Override
+            public void onFailure(Call<RestfulResponse<List<Artisan>>> call, Throwable t) {
+                Toast.makeText(menu_activity.this, "failure", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 
     @Override
     public void onBackPressed() {
@@ -99,4 +157,34 @@ public class menu_activity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+    class ArtisanAdapter extends BaseAdapter {
+
+        List<Artisan> artisans;
+
+        public ArtisanAdapter(List<Artisan> artisans) {
+            this.artisans = artisans;
+        }
+
+        public int getCount() {
+            return artisans.size();
+        }
+        public Artisan getItem(int i) {
+            return artisans.get(i);
+        }
+        public long getItemId(int i) {
+            return 0;
+        }
+        public View getView(int i, View view, ViewGroup viewGroup) {
+            view = getLayoutInflater().inflate(R.layout.artisan_list_layout, null);
+            ImageView artisanImage = (ImageView)view.findViewById(R.id.artisanImage);
+            TextView artisanName = (TextView)view.findViewById(R.id.artisanName);
+            artisanName.setText(artisans.get(i).getFirstName() + " " + artisans.get(i).getLastName());
+            artisanImage.setImageResource(artisanImages[i%3]);
+            return view;
+        }
+
+    }
+
+
 }

@@ -43,6 +43,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+        startActivity(intent);
+
         //gson tool for printing objects
         final Gson gson = new Gson();
 
@@ -95,6 +98,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
