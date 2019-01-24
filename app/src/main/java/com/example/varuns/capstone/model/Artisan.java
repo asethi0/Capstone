@@ -10,6 +10,14 @@ public class Artisan {
     String bio;
     List<ArtisanItem> artisanItems;
 
+    public Artisan(Integer artisanId, String firstName, String lastName, String bio, List<ArtisanItem> artisanItems) {
+        this.artisanItems = artisanItems;
+        this.artisanId = artisanId;
+        this.firstName = firstName;
+        this.bio = bio;
+        this.lastName = lastName;
+    }
+
     public Integer getArtisanId() {
         return artisanId;
     }

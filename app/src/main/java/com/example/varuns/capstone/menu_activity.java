@@ -23,9 +23,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.varuns.capstone.model.Artisan;
+import com.example.varuns.capstone.model.ArtisanItem;
 import com.example.varuns.capstone.services.ApiService;
 import com.example.varuns.capstone.services.RestfulResponse;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -57,7 +59,8 @@ public class menu_activity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         artisanList = (ListView)findViewById(R.id.artisanList);
-        getArtisans();
+        //TODO - uncomment this getArtisans();
+        getArtisansNoDB();
         artisanList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position,
@@ -82,6 +85,14 @@ public class menu_activity extends AppCompatActivity
 //        });
     }
 
+    public void getArtisansNoDB() {
+        List<Artisan> artisans = new ArrayList<Artisan>();
+        //Integer artisanId, String firstName, String lastName, String bio, List<ArtisanItem> artisanItems
+        artisans.add(new Artisan(1, "martha", "blah", "hello", new ArrayList<ArtisanItem>()));
+        menu_activity.ArtisanAdapter artisanAdapter = new menu_activity.ArtisanAdapter(artisans);
+        artisanList.setAdapter(artisanAdapter);
+    }
+
     public void getArtisans() {
         Call<RestfulResponse<List<Artisan>>> call = ApiService.artisanService().getAllArtisans();
         //handle the response
@@ -92,8 +103,6 @@ public class menu_activity extends AppCompatActivity
                 Toast.makeText(menu_activity.this, "success", Toast.LENGTH_SHORT).show();
                 menu_activity.ArtisanAdapter artisanAdapter = new menu_activity.ArtisanAdapter(artisans);
                 artisanList.setAdapter(artisanAdapter);
-
-
             }
 
             @Override
@@ -161,9 +170,23 @@ public class menu_activity extends AppCompatActivity
     class ArtisanAdapter extends BaseAdapter {
 
         List<Artisan> artisans;
+        List<Artisan> original;
 
         public ArtisanAdapter(List<Artisan> artisans) {
             this.artisans = artisans;
+        }
+
+        public void filterArtisans(List<Artisan> newArtisans) {
+            this.original = this.artisans;
+            this.artisans = newArtisans;
+        }
+
+        public void undoFilter() {
+            this.artisans = original;
+        }
+
+        public void addArtisan(Artisan a) {
+            artisans.add(a);
         }
 
         public int getCount() {
