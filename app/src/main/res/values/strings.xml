@@ -184,4 +184,5 @@
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="title_activity_messages">Messages</string>
+    <string name="title_activity_send_message">Send_message</string>
 </resources>
