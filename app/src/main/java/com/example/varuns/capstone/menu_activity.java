@@ -43,30 +43,32 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class menu_activity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, SearchView.OnQueryTextListener {
+        implements NavigationView.OnNavigationItemSelectedListener,
+         SearchView.OnQueryTextListener {
 
     private ListView artisanList;
-    private ArtisanAdapter artisanAdapterGlobal;
-    private Integer[] artisanImages = {R.drawable.maria, R.drawable.native5, R.drawable.native3 };
-
+    private static ArtisanAdapter artisanAdapterGlobal;
+    private Integer[] artisanImages = { R.drawable.maria, R.drawable.native5, R.drawable.native3 };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu_activity);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("");
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer,
+           toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         artisanList = (ListView)findViewById(R.id.artisanList);
+
         //TODO - uncomment this getArtisans();
         getArtisansNoDB();
         artisanList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -77,27 +79,8 @@ public class menu_activity extends AppCompatActivity
                 Intent intent = new Intent(menu_activity.this, ScrollingActivity.class);
                 intent.putExtra("artisanId", artisan.getArtisanId());
                 startActivity(intent);
-
             }
         });
-
-        // Get the intent, verify the action and get the query
-        /*Intent intent = getIntent();
-        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-            String query = intent.getStringExtra(SearchManager.QUERY);
-            doMySearch(query);
-        }*/
-
-//        test();
-
-//        Button button = (Button) findViewById(R.id.artisan_temp);
-//        button.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view){
-//                Intent myintent = new Intent(menu_activity.this, ScrollingActivity.class);
-//                startActivity(myintent);
-//            }
-//        });
     }
 
     @Override
@@ -109,6 +92,7 @@ public class menu_activity extends AppCompatActivity
         // Get the SearchView and set the searchable configuration
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+
         // Assumes current activity is the searchable activity
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         searchView.setIconifiedByDefault(false); // Do not iconify the widget; expand it by default
@@ -121,11 +105,13 @@ public class menu_activity extends AppCompatActivity
 
     @Override
     public boolean onQueryTextSubmit(String query) {
+        //search submission is ignored since every text change applies filter
         return false;
     }
 
     @Override
     public boolean onQueryTextChange(String query) {
+        //whenever the user changes the text within the search bar, filter artisans
         artisanAdapterGlobal.getFilter().filter(query);
 
         return true;
@@ -135,32 +121,34 @@ public class menu_activity extends AppCompatActivity
     String itemDescT = "A lovable stuffed bear";
 
     private String[] nameDB = {
-            "Martha",
-            "Maria",
-            "Sofia",
-            "Camila",
-            "Emma",
-            "Sara",
-            "Gabriela",
-            "Elena",
-            "Victoria",
-            "Emilia",
-            "Natalia"
+        "Martha",
+        "Maria",
+        "Sofia",
+        "Camila",
+        "Emma",
+        "Sara",
+        "Gabriela",
+        "Elena",
+        "Victoria",
+        "Emilia",
+        "Natalia"
     };
 
     private String[] nameDBLast = {
-            "Hernandez",
-            "Garcia",
-            "Lopez",
-            "Martinez",
-            "Rodriguez",
-            "Gonzalez",
-            "Perez",
-            "Sanchez",
-            "Gomez",
-            "Flores",
-            "Jiminez"
+        "Hernandez",
+        "Garcia",
+        "Lopez",
+        "Martinez",
+        "Rodriguez",
+        "Gonzalez",
+        "Perez",
+        "Sanchez",
+        "Gomez",
+        "Flores",
+        "Jiminez"
     };
+
+    private String placeHolderText = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum";
 
     public void getArtisansNoDB() {
         List<Artisan> artisans = new ArrayList<Artisan>();
@@ -168,9 +156,9 @@ public class menu_activity extends AppCompatActivity
         for (int i = 0; i < nameDB.length; i++) {
             ArrayList<ArtisanItem> items = new ArrayList<>();
             items.add(new ArtisanItem(i, 0, itemNameT, itemDescT));
-            artisans.add(new Artisan(i, nameDB[i], nameDBLast[i], "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum",
-                    items));
+            artisans.add(new Artisan(i, nameDB[i], nameDBLast[i], placeHolderText, items));
         }
+
         menu_activity.ArtisanAdapter artisanAdapter = new menu_activity.ArtisanAdapter(artisans);
         artisanAdapterGlobal = artisanAdapter;
         artisanList.setAdapter(artisanAdapter);
@@ -200,7 +188,9 @@ public class menu_activity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else {
+        } 
+
+        else {
             super.onBackPressed();
         }
     }
@@ -228,22 +218,34 @@ public class menu_activity extends AppCompatActivity
 
         if (id == R.id.nav_home) {
             // Handle the camera action
-        } else if (id == R.id.nav_info) {
+        } 
 
-        } else if (id == R.id.nav_send) {
+        else if (id == R.id.nav_info) {
+
+        } 
+
+        else if (id == R.id.nav_send) {
             Intent myintent = new Intent(menu_activity.this, Send_message.class);
             startActivity(myintent);
             return true;
+        } 
 
-        } else if (id == R.id.nav_tasks) {
+        else if (id == R.id.nav_tasks) {
 
-        } else if (id == R.id.nav_share) {
+        } 
+
+        else if (id == R.id.nav_share) {
 
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
+
         return true;
+    }
+
+    public static ArtisanAdapter getAdapter() {
+        return artisanAdapterGlobal;
     }
 
     class ArtisanAdapter extends BaseAdapter implements Filterable {
@@ -253,48 +255,55 @@ public class menu_activity extends AppCompatActivity
         private ArtisanFilter artisanFilter;
 
         private class ArtisanFilter extends Filter {
+
             @Override
             protected FilterResults performFiltering(CharSequence constraint) {
                 FilterResults filterResults = new FilterResults();
-                if (constraint != null && constraint.length()>0) {
+
+                //case: user has queried a value
+                if (constraint != null && constraint.length() > 0) {
                     ArrayList<Artisan> filtered = new ArrayList<>();
 
                     constraint = constraint.toString().toLowerCase();
+                    String[] separated = constraint.split(" ");
+
                     // search content in friend list
                     for (Artisan a : artisans) {
-                        boolean firstValid = true, lastValid=true, whitespace = false;
-                        int whiteSpaceIndex = 0;
                         String first = a.getFirstName().toLowerCase();
                         String last = a.getLastName().toLowerCase();
-                        for (int i = 0; i < constraint.length(); i++) {
-                            if (Character.isWhitespace(constraint.charAt(i))) {
-                                whitespace = true;
-                                whiteSpaceIndex = i;
-                                lastValid = true;
-                                continue;
-                            }
 
-                            if (!whitespace &&
-                                    (first.length() <= i || first.charAt(i) != constraint.charAt(i))) {
+                        //user only has searched whitespace
+                        if (separated.length == 0)
+                            break;
+
+                        boolean firstValid = true, lastValid = true;
+                        for (int i = 0; i < separated[0].length; i++) {
+                            //check first whitespace separated query against first name
+                            if (first.length() <= i || 
+                                (seperated[0].charAt(i) != first.charAt(i))) {
                                 firstValid = false;
                             }
 
-                            if (!whitespace &&
-                                    (last.length() <= i || last.charAt(i) != constraint.charAt(i))) {
-                                lastValid = false;
-                            }
-
-                            //whitespace has occured, only check last name
-                            else if (whitespace &&
-                                    (last.length() <= i - whiteSpaceIndex - 1 ||
-                                            last.charAt(i - whiteSpaceIndex - 1) != constraint.charAt(i))) {
+                            //check first whitespace separated query against last name
+                            if (last.length() <= i || 
+                                (seperated[0].charAt(i) != last.charAt(i))) {
                                 lastValid = false;
                             }
                         }
 
-                        if (firstValid ||
-                                ((lastValid && whiteSpaceIndex != constraint.length() - 1)
-                                || (lastValid && whiteSpaceIndex == 0))) {
+                        //user searched 2 words - this assumes second word is last name
+                        if (separated.length >= 2) {
+                            lastValid = true;
+                            for (int i = 0; i < separated[1].length; i++) {
+                                //check first whitespace separated query against last name
+                                if (last.length() <= i || 
+                                    (seperated[1].charAt(i) != last.charAt(i))) {
+                                    lastValid = false;
+                                }
+                            }
+                        }
+
+                        if (firstValid || lastValid) {
                             filtered.add(a);
                         }
                     }
@@ -303,6 +312,7 @@ public class menu_activity extends AppCompatActivity
                     filterResults.values = filtered;
                 }
 
+                //case: search query is empty
                 else {
                     filterResults.count = artisans.size();
                     filterResults.values = artisans;
@@ -338,27 +348,31 @@ public class menu_activity extends AppCompatActivity
             artisans.add(a);
         }
 
-        public List<Artisan> getArtisans() { return artisans; }
+        public List<Artisan> getArtisans() {
+            return artisans;
+        }
 
         public int getCount() {
             return filteredArtisans.size();
         }
+
         public Artisan getItem(int i) {
             return filteredArtisans.get(i);
         }
+
         public long getItemId(int i) {
             return 0;
         }
+
         public View getView(int i, View view, ViewGroup viewGroup) {
             view = getLayoutInflater().inflate(R.layout.artisan_list_layout, null);
             ImageView artisanImage = (ImageView)view.findViewById(R.id.artisanImage);
+
             TextView artisanName = (TextView)view.findViewById(R.id.artisanName);
             artisanName.setText(filteredArtisans.get(i).getFirstName() + " " + filteredArtisans.get(i).getLastName());
             artisanImage.setImageResource(artisanImages[i%3]);
+
             return view;
         }
-
     }
-
-
 }
