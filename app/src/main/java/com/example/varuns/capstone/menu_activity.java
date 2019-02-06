@@ -265,7 +265,7 @@ public class menu_activity extends AppCompatActivity
                     ArrayList<Artisan> filtered = new ArrayList<>();
 
                     constraint = constraint.toString().toLowerCase();
-                    String[] separated = constraint.split(" ");
+                    String[] separated = ((String) constraint).split(" ");
 
                     // search content in friend list
                     for (Artisan a : artisans) {
@@ -277,16 +277,16 @@ public class menu_activity extends AppCompatActivity
                             break;
 
                         boolean firstValid = true, lastValid = true;
-                        for (int i = 0; i < separated[0].length; i++) {
+                        for (int i = 0; i < separated[0].length(); i++) {
                             //check first whitespace separated query against first name
                             if (first.length() <= i || 
-                                (seperated[0].charAt(i) != first.charAt(i))) {
+                                (separated[0].charAt(i) != first.charAt(i))) {
                                 firstValid = false;
                             }
 
                             //check first whitespace separated query against last name
                             if (last.length() <= i || 
-                                (seperated[0].charAt(i) != last.charAt(i))) {
+                                (separated[0].charAt(i) != last.charAt(i))) {
                                 lastValid = false;
                             }
                         }
@@ -294,10 +294,10 @@ public class menu_activity extends AppCompatActivity
                         //user searched 2 words - this assumes second word is last name
                         if (separated.length >= 2) {
                             lastValid = true;
-                            for (int i = 0; i < separated[1].length; i++) {
+                            for (int i = 0; i < separated[1].length(); i++) {
                                 //check first whitespace separated query against last name
                                 if (last.length() <= i || 
-                                    (seperated[1].charAt(i) != last.charAt(i))) {
+                                    (separated[1].charAt(i) != last.charAt(i))) {
                                     lastValid = false;
                                 }
                             }
